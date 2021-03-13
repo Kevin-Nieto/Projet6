@@ -12,11 +12,21 @@
     "@angular/core": "^11.0.1",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^5.3.0",
+    "helmet": "^4.4.1",
     "jsonwebtoken": "^8.5.1",
+    "maskdata": "^1.1.4",
+    "mongo-express-sanitize": "^1.0.1",
     "mongoose": "^5.10.13",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "^1.4.2",
-    "rxjs": "^6.6.3"
+    "password-validator": "^5.1.1",
+    "rxjs": "^6.6.3",
+    "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }

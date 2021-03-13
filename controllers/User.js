@@ -1,11 +1,23 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const validator = require('validator');
+const passwordValidator = require('password-validator');
 
 //Fonction "signup", pour que l'utilisateur puisse créer un compte
 exports.signup = (req, res, next) => {
-	bcrypt.hash(req.body.password, 10) //On va faire un "hash" du mot de passe, on lui demande de faire 10 tours pour le sécuriser. (Plus il y a de tour, plus se sera sécurisé, mais aussi plus long)
-	.then(hash => { 
+	let schemaPassword = new passwordValidator();
+	schemaPassword
+	.is().min(8)                                    // Minimum length 8
+	.is().max(20)                                  // Maximum length 20
+	.has().uppercase()                              // Must have uppercase letters
+	.has().lowercase()								// Must have lowercase letters
+	.has().digits(2)                                // Must have at least 2 digits
+	.has().not().spaces()                           // Should not have spaces
+	.is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+	if (schemaPassword.validate(req.body.password) === true && validator.isEmail(req.body.email)) {
+		bcrypt.hash(req.body.password, 10) //On va faire un "hash" du mot de passe, on lui demande de faire 10 tours pour le sécuriser. (Plus il y a de tour, plus se sera sécurisé, mais aussi plus long)
+	.then(hash => {
 		const user = new User({ //On crée un nouvel utilisateur avec son email et le mot de passe
 			email: req.body.email,
 			password: hash
@@ -15,6 +27,10 @@ exports.signup = (req, res, next) => {
 		.catch(error => res.status(400).json({ error }));
 	})
 	.catch(error => res.status(500).json({ error }));
+	}
+	else {
+		res.status(500).json({ error: ' email ou mot de passe invalide '});
+	}
 };
 
 //Fonction pour se connecter

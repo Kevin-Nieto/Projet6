@@ -4,14 +4,17 @@ const bodyParser = require('body-parser');
 const sauceRoutes = require('./routes/Sauces');
 const userRoutes = require('./routes/User');
 const path = require('path');
+const helmet = require('helmet');
 const app = express();
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Paramettres de connection à MongoDB
-mongoose.connect('mongodb+srv://New_user1:azerty@cluster0.87sk1.mongodb.net/test?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.87sk1.mongodb.net/test?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !')
+  .catch((error) => console.log(error)
 );
 //Pour que notre api soit fonctionnelle depuis tous les utilisateurs, on autorise tous les acces
 app.use((req, res, next) => {
@@ -20,9 +23,12 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   next();
 });
-
+app.use(helmet());
 app.use(bodyParser.json());
+
+
 //On défini nos routes pour acceder à nos différents dossiers
+
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
