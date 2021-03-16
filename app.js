@@ -8,7 +8,6 @@ const helmet = require('helmet');
 const app = express();
 const dotenv = require('dotenv');
 const rateLimit = require("express-rate-limit");
-const xss = require('xss-clean');
 dotenv.config();
 
 const apiLimiter = rateLimit({
@@ -31,7 +30,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(xss());
 app.use(helmet());
 app.use("/api/", apiLimiter);
 app.use(bodyParser.json());
